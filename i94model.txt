@@ -1,0 +1,6 @@
+value i94model
+	1 = 'Air'
+	2 = 'Sea'
+	3 = 'Land'
+	9 = 'Not reported' ;
+	
