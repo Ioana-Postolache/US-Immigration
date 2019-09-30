@@ -2,3 +2,4 @@
 *.crc
 metastore_db/*
 sas_data/*
+*.parquet
