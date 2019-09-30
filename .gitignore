@@ -1,2 +1,4 @@
 .ipynb_checkpoints
 *.crc
+metastore_db/*
+sas_data/*
