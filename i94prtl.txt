@@ -1,4 +1,3 @@
-value $i94prtl
    'ALC'	=	'ALCAN, AK             '
    'ANC'	=	'ANCHORAGE, AK         '
    'BAR'	=	'BAKER AAF - BAKER ISLAND, AK'

@@ -4,7 +4,7 @@ import shutil
 import os
 import pandas as pd
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import udf, col
+from pyspark.sql.functions import col, split
 from pyspark.sql.functions import year, month, dayofmonth, hour, weekofyear, date_format, from_unixtime, monotonically_increasing_id
 from pyspark.sql.types import StructType as R, StructField as Fld, DoubleType as Dbl, StringType as Str, IntegerType as Int, DateType as Date, LongType as Long, TimestampType as Ts
 
@@ -99,6 +99,15 @@ def process_mappings(spark, input_data, output_data, file_name, column_names, di
     df.iloc[ : , 1 ] = df.iloc[ : , 1 ].str.replace("'", "")
     if(dimension == 'us_state'):
         df.iloc[ : , 0 ] = df.iloc[ : , 0].str.replace("'", "").str.replace("\t", "")
+    if(dimension == 'us_port'):
+        df.iloc[ : , 0 ] = df.iloc[ : , 0].str.replace("'", "")
+        #splitting city and state by ", " from the city column
+        new = df["city"].str.split(", ", n = 1, expand = True) 
+        # making separate state column from new data frame 
+        df["state"]= new[1].str.strip()
+        # replacing the value of city column from new data frame 
+        df["city"]= new[0] 
+        
     print(df.head())
     print(df.dtypes)
     table = spark.createDataFrame(df).write.mode('overwrite').parquet(output_data + dimension)
@@ -113,22 +122,47 @@ def main():
     output_data = ""
     process_mappings(spark, input_data, output_data, 'i94cntyl.txt', ["code", "country"], "country", " =  ")
     process_mappings(spark, input_data, output_data, 'i94addrl.txt', ["code", "state"], "us_state", "=")
+    process_mappings(spark, input_data, output_data, 'i94prtl.txt', ["code", "city"], "us_port", "	=	")
+    
+    airportSchema = R([
+                        Fld("airport_id",Str()),
+                        Fld("type",Str()),
+                        Fld("name",Str()),
+                        Fld("elevation_ft",Str()),
+                        Fld("continent",Str()),
+                        Fld("iso_country",Str()),
+                        Fld("iso_region",Str()),
+                        Fld("municipality",Str()),
+                        Fld("gps_code",Str()),
+                        Fld("iata_code",Str()),
+                        Fld("local_code",Str()),
+                        Fld("coordinates",Str())
+                        ])
 
+    df_airport_initial = spark.read.csv("airport-codes_csv.csv", header='true', schema=airportSchema).distinct()
+    # splitting country and state by "-" from the iso_region column & dropping old iso_region column
+    df_airport = df_airport_initial.withColumn("temp", split(col("iso_region"), "-"))\
+                                   .withColumn("state", col('temp')[1])\
+                                   .drop("temp")\
+                                   .drop("iso_region")                                               
+    
+    print(df_airport.count())
+    print(df_airport.show(5, truncate=False))    
     
     demographicsSchema = R([
-    Fld("city",Str()),
-    Fld("state",Str()),
-    Fld("median_age",Dbl()),
-    Fld("male_population",Str()),
-    Fld("female_population",Str()),
-    Fld("total _population",Int()),
-    Fld("number_of_veterans",Int()),
-    Fld("number_of_foreign_born",Int()),
-    Fld("average_household_size",Dbl()),
-    Fld("state_code",Str()),
-    Fld("race",Str()),
-    Fld("count",Int()) 
-])
+                            Fld("city",Str()),
+                            Fld("state",Str()),
+                            Fld("median_age",Dbl()),
+                            Fld("male_population",Str()),
+                            Fld("female_population",Str()),
+                            Fld("total _population",Int()),
+                            Fld("number_of_veterans",Int()),
+                            Fld("number_of_foreign_born",Int()),
+                            Fld("average_household_size",Dbl()),
+                            Fld("state_code",Str()),
+                            Fld("race",Str()),
+                            Fld("count",Int()) 
+                            ])
     
     df_demographics = spark.read.csv('us-cities-demographics.csv', header='true', sep=";", schema=demographicsSchema).distinct()
     print(df_demographics.count())
