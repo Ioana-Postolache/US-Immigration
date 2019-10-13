@@ -93,12 +93,12 @@ def process_immigration_data(spark, input_data, output_data):
     df_spark_cols_renamed.write.mode('overwrite').partitionBy("year", "month").parquet(dirpath)
 
 
-def process_mappings(spark, input_data, output_data, file_name, column_names, dimension):
-    df = pd.read_csv(input_data+file_name, sep=" =  ", header=None, engine='python',  names = column_names,  skipinitialspace = True) 
+def process_mappings(spark, input_data, output_data, file_name, column_names, dimension, separator):
+    df = pd.read_csv(input_data+file_name, sep=separator, header=None, engine='python',  names = column_names, skipinitialspace = True) 
     print(df.head())
-    print(df.iloc[ : , 1 ])
-    if(dimension == 'country'):
-        df.iloc[ : , 1 ] = df.iloc[ : , 1 ].str.replace("'", "")
+    df.iloc[ : , 1 ] = df.iloc[ : , 1 ].str.replace("'", "")
+    if(dimension == 'us_state'):
+        df.iloc[ : , 0 ] = df.iloc[ : , 0].str.replace("'", "").str.replace("\t", "")
     print(df.head())
     print(df.dtypes)
     table = spark.createDataFrame(df).write.mode('overwrite').parquet(output_data + dimension)
@@ -111,7 +111,8 @@ def main():
     input_data = ""
 #    output_data = "s3a://immigration-data-lake/"
     output_data = ""
-    process_mappings(spark, input_data, output_data, 'i94cntyl.txt', ["code", "country"], "country")
+    process_mappings(spark, input_data, output_data, 'i94cntyl.txt', ["code", "country"], "country", " =  ")
+    process_mappings(spark, input_data, output_data, 'i94addrl.txt', ["code", "state"], "us_state", "=")
 
     
     demographicsSchema = R([
