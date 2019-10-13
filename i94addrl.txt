@@ -1,4 +1,3 @@
-value i94addrl
 	'AL'='ALABAMA'
 	'AK'='ALASKA'
 	'AZ'='ARIZONA'

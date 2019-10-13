@@ -118,3 +118,7 @@ I think you can connect to EMR EC2 (an EC2 instance starts with EMR clusters by 
 
 
 /* VISATYPE - Class of admission legally admitting the non-immigrant to temporarily stay in U.S. */
+
+Spark SAS Data Source (sas7bdat) - https://github.com/saurfang/spark-sas7bdat
+A library for reading SAS data (.sas7bdat) with Spark.
+Schema is automatically inferred from metadata embedded in the SAS file. (Behaviour can be customised, see parameters below)
