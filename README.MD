@@ -1,3 +1,4 @@
+!!! dependencies
 How to upload the sas data from the workspace to S3 directly? also is there any good ideas to read multiple sas files?
 for directly uploading the data to S3, you can install CLI first on your workspace, https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html
 zip -r /home/workspace/data.zip /data/18-83510-I94-Data-2016 to compress the data into a zip file in the workspace
@@ -18,40 +19,20 @@ immigration_data_dir = 's3://udacity-capstone-project-12138/immigration-data/i94
 
 df_immigration = spark.read.format('com.github.saurfang.sas.spark').load(immigration_data_dir)
 
-Thank you!
-
-SEPTEMBER 15, 2019
-Yung-Chun L.
-
-Mentor
-
-4:47 PM
-
-Hi @AoyiS , according to my knowledge, this package com.github.saurfang.sas.spark does not support directly read a directory.
+ this package com.github.saurfang.sas.spark does not support directly read a directory.
 
 You should try to read file one by one
 
-Aoyi S.
-
-6:40 PM
 
 I was thinking about reading the whole directory (how the variable is named) but I actually only passed in one file, i94_feb16_sub.sas7bdat. Anything else that I might have done wrong? If the code is correct, is there any specific setting that I need to do when I create the EMR cluster in order to access this external package?
 
-SEPTEMBER 16, 2019
-Yung-Chun L.
 
-Mentor
-
-5:23 PM
 
 I see. You should download the package, https://github.com/saurfang/spark-sas7bdat
 
 https://databricks.com/blog/2015/07/28/using-3rd-party-libraries-in-databricks-apache-spark-packages-and-maven-libraries.html
 
-SEPTEMBER 19, 2019
-Jun W.
 
-11:16 PM
 
 I think you can connect to EMR EC2 (an EC2 instance starts with EMR clusters by default) through AWS CLI from your local computer. In that way, you can copy files to EC2, and run scripts there through AWS CLI. I haven't tried it. But I will. There is a blog on AWS about that, including some other services. You probably need to modify in order to use in this project.
 

@@ -52,4 +52,4 @@
 	'WA'='WASHINGTON'
 	'WI'='WISCONSON'
 	'WY'='WYOMING' 
-	'99'='All Other Codes' ;
+	'99'='All Other Codes'

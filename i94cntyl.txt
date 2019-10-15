@@ -286,4 +286,4 @@
    849 =  'No Country Code (849)'
    914 =  'No Country Code (914)'
    944 =  'No Country Code (944)'
-   996 =  'No Country Code (996)' ;
+   996 =  'No Country Code (996)'
