@@ -4,12 +4,9 @@ dl.cfg
 metastore_db/*
 sas_data/*
 *.parquet
-airports/*
-country/*
-immigration_data/*
+2016_04/*
 metastore_db/*
 sas_data/*
 spark-warehouse/*
-us_cities_demographic/*
-us_port/*
-us_state/*
+
+
