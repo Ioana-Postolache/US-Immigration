@@ -74,3 +74,12 @@ The rest of the files were handled with Apache Spark, as it can manipulate multi
 
 #### Propose how often the data should be updated and why.
 The immigration data should be updated monthly. However, if data needs to be analyzed more often (such as in the scenario where the dashboard that must be updated on a daily basis by 7am every day), the data should be updated daily. The other data sets can be updated on a quarterly basis, or more often, if necessary (new countries/ US airports/ US ports appear). The demographics data can be updated on a yearly basis - since the data is not pubicly available more often.
+
+## Config file (dl.cfg) structure
+Below is the structure of the config file. Don't use any quotes for the KEY ID and ACCESS KEY:
+```
+[AWS]
+AWS_ACCESS_KEY_ID=''
+AWS_SECRET_ACCESS_KEY=''
+S3=''
+```
