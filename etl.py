@@ -220,7 +220,7 @@ def process_airports(spark, input_data, output_data, dimension):
     df_airport_clean.printSchema()
     
     dirpath = output_data + dimension
-    df_airport_clean.write.mode("overwrite").partitionBy("airport_code", "state").parquet(dirpath)
+    df_airport_clean.repartitionByRange(3, "airport_code", "state").write.mode("overwrite").parquet(dirpath)
 
     
 def process_us_cities_demographics(spark, input_data, output_data, dimension):
@@ -280,15 +280,19 @@ def main():
     input_data = ""
     output_data = "2016_04/"
 #     output_data = ""
+
     KEY                    = config.get('AWS','AWS_ACCESS_KEY_ID')
     SECRET                 = config.get('AWS','AWS_SECRET_ACCESS_KEY')
     S3_BUCKET              = config.get('AWS','S3')
 
-    s3 = boto3.client('s3',
-                           region_name="us-west-2",
-                           aws_access_key_id=KEY,
-                           aws_secret_access_key=SECRET
-                         )
+    session = boto3.Session(
+        aws_access_key_id=KEY,
+        aws_secret_access_key=SECRET,
+        region_name='us-west-2'
+    )
+    s3 = session.resource('s3')
+    bucket = s3.Bucket(S3_BUCKET)
+
     
     df_country = process_mappings(spark, 'mappings/i94cntyl.txt', output_data, ["country_code", "country"], "country", " =  ")
     df_us_state = process_mappings(spark, 'mappings/i94addrl.txt', output_data, ["state_code", "state"], "us_state", "=")
@@ -305,7 +309,7 @@ def main():
     process_immigration_data(spark, '../../data/18-83510-I94-Data-2016/i94_apr16_sub.sas7bdat', output_data, "immigration_data", df_us_state, df_visa, df_mode)
     
     # upload to S3
-    s3.upload_file('manifests/'+filename, S3_BUCKET, filename)      
+    upload_files(s3, bucket, './2016_04')      
     
 
 if __name__ == "__main__":
