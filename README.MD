@@ -1,6 +1,6 @@
 ## Scoping the Project
 
-## Explore the Data & Cleaning Steps
+#### Explore the Data & Cleaning Steps
 
 - **I94 Immigration Data**: This data comes from the US National Tourism and Trade Office. A data dictionary is included in the workspace. This is where the data comes from. immigration_data_sample.csv contains the sample data.
 - **U.S. City Demographic Data**: This data comes from [OpenSoft](https://public.opendatasoft.com/explore/dataset/us-cities-demographics/export/). This dataset contains information about the demographics of all US cities and census-designated places with a population greater or equal to 65,000. This data comes from the US Census Bureau's 2015 American Community Survey. 
@@ -74,8 +74,3 @@ The rest of the files were handled with Apache Spark, as it can manipulate multi
 
 #### Propose how often the data should be updated and why.
 The immigration data should be updated monthly. However, if data needs to be analyzed more often (such as in the scenario where the dashboard that must be updated on a daily basis by 7am every day), the data should be updated daily. The other data sets can be updated on a quarterly basis, or more often, if necessary (new countries/ US airports/ US ports appear). The demographics data can be updated on a yearly basis - since the data is not pubicly available more often.
-
-
-
-
-
